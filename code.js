@@ -134,6 +134,19 @@ function equalsClicked() {
     display(result);
 }
 
+function initialize() {
+    operand = 0;
+    operatorSelected = false;
+    operandStack = stackCreate();
+    operatorStack = stackCreate();
+    result = null;
+    display(0);
+    numberButtons.forEach(button => {
+        button.addEventListener('click', digitClicked);
+        button.classList.remove('disabled');
+    });
+}
+
 function stackCreate () {
     return new Array(0);
 }
@@ -155,14 +168,14 @@ function stackPop(stack) {
 }
 
 const numberButtons = Array.from(document.getElementsByClassName('number')),
-      operatorButtons = Array.from(document.getElementsByClassName('operator')),
-      operandStack = stackCreate(),
-      operatorStack = stackCreate();
-let operand = 0,
-    operatorSelected = false,
-    result = null;
+      operatorButtons = Array.from(document.getElementsByClassName('operator'));
+let operand,
+    operatorSelected,
+    operandStack,
+    operatorStack,
+    result;
 
-display(0);
-numberButtons.forEach(button => button.addEventListener('click', digitClicked));
+initialize();
 operatorButtons.forEach(button => button.addEventListener('click', operatorClicked));
 document.getElementById('equals').addEventListener('click', equalsClicked);
+document.getElementById('clear').addEventListener('click', initialize);
