@@ -72,10 +72,32 @@ function operator(event) {
     // use operator
 }
 
+function stack_create () {
+    return new Array(0);
+}
+
+function stack_push(stack, element) {
+    stack.push(element);
+}
+
+function stack_empty(stack) {
+    return stack.length == 0;
+}
+
+function stack_top(stack) {
+    return stack.slice(-1)[0];
+}
+
+function stack_pop(stack) {
+    return stack.pop();
+}
+
 let numberButtons = Array.from(document.getElementsByClassName('number')),
     operatorButtons = Array.from(document.getElementsByClassName('operator')),
     displayValue = 0,
-    operatorSelected = false;
+    operatorSelected = false
+    operandStack = stack_create(),
+    operatorStack = stack_create();
 display(0);
 numberButtons.forEach(button => button.addEventListener('click', digit));
 operatorButtons.forEach(button => button.addEventListener('click', operator));
