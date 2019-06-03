@@ -10,3 +10,7 @@ div {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
 }
+
+.number {
+    background-color: white;
+}
