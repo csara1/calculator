@@ -14,3 +14,11 @@ div {
 .number {
     background-color: white;
 }
+
+.operator {
+    background-color: yellow;
+}
+
+.disabled {
+    background-color: gray;
+}

@@ -45,18 +45,37 @@ function display(integer) {
 }
 
 function digit(event) {
+    operatorSelected = false;
     displayValue *= 10;
     displayValue += parseInt(event.srcElement.innerText);
     display(displayValue);
     if(displayValue > 1e14) {
         numberButtons.forEach(button => {
             button.removeEventListener('click', digit);
-            button.style.backgroundColor = "gray";
+            button.classList.add('disabled');
         });
     }
 }
 
+function operator(event) {
+    if(!operatorSelected) {
+        numberButtons.forEach(button => {
+            button.addEventListener('click', digit);
+            button.classList.remove('disabled');
+        });
+        operatorSelected = true;
+        // use operand
+    } else {
+        // override last operator
+    }
+    let currentOperator = event.srcElement.innerText;
+    // use operator
+}
+
 let numberButtons = Array.from(document.getElementsByClassName('number')),
-    displayValue = 0;
+    operatorButtons = Array.from(document.getElementsByClassName('operator')),
+    displayValue = 0,
+    operatorSelected = false;
 display(0);
 numberButtons.forEach(button => button.addEventListener('click', digit));
+operatorButtons.forEach(button => button.addEventListener('click', operator));
