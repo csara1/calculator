@@ -22,3 +22,8 @@ div {
 .disabled {
     background-color: gray;
 }
+
+#equals {
+    background-color: blue;
+    color: white;
+}

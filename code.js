@@ -55,6 +55,7 @@ function display(number) {
 
 function digitClicked(event) {
     operatorSelected = false;
+    result = null;
     operand *= 10;
     operand += parseInt(event.srcElement.innerText);
     display(operand);
@@ -83,8 +84,13 @@ function operatorClicked(event) {
             button.addEventListener('click', digitClicked);
             button.classList.remove('disabled');
         });
-        stackPush(operandStack, operand);
-        operand = 0;
+        if(result != null) {
+            stackPush(operandStack, result);
+            result = null;
+        } else {
+            stackPush(operandStack, operand);
+            operand = 0;
+        }
     } else {
         stackPop(operatorStack);
     }
@@ -102,6 +108,30 @@ function operatorClicked(event) {
     }
     stackPush(operatorStack, currentOperator);
     operatorSelected = true;
+}
+
+function equalsClicked() {
+    if(result != null) {
+        return;
+    }
+    if(!operatorSelected) {
+        numberButtons.forEach(button => {
+            button.addEventListener('click', digitClicked);
+            button.classList.remove('disabled');
+        });
+        stackPush(operandStack, operand);
+        operand = 0;
+    } else {
+        stackPop(operatorStack);
+    }
+    while(!stackEmpty(operatorStack)) {
+        let rightOperand = stackPop(operandStack),
+            operator = stackPop(operatorStack),
+            leftOperand = stackPop(operandStack);
+        stackPush(operandStack, operate(operator, leftOperand, rightOperand));
+    }
+    result = stackPop(operandStack);
+    display(result);
 }
 
 function stackCreate () {
@@ -129,8 +159,10 @@ const numberButtons = Array.from(document.getElementsByClassName('number')),
       operandStack = stackCreate(),
       operatorStack = stackCreate();
 let operand = 0,
-    operatorSelected = false;
+    operatorSelected = false,
+    result = null;
 
 display(0);
 numberButtons.forEach(button => button.addEventListener('click', digitClicked));
 operatorButtons.forEach(button => button.addEventListener('click', operatorClicked));
+document.getElementById('equals').addEventListener('click', equalsClicked);
