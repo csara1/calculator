@@ -27,7 +27,7 @@ function operate(operator, a, b) {
     }
 }
 
-function display(integer) {
+function splitInThousands(integer) {
     let string = "" + integer%10,
         digits = 1;
     integer /= 10;
@@ -41,11 +41,16 @@ function display(integer) {
         integer /= 10;
         integer = Math.floor(integer);
     }
-    document.getElementById('display').value = string;
+    return string;
 }
 
-function displayFloat(float) {
-    document.getElementById('display').value = float;
+function display(number) {
+    const absValue = Math.abs(number);
+    if(absValue >= 1000 && absValue < 1e21) {
+        number = (number<0) ? '-'+splitInThousands(absValue)
+                            : splitInThousands(absValue);
+    }
+    document.getElementById('display').value = number;
 }
 
 function digitClicked(event) {
@@ -93,7 +98,7 @@ function operatorClicked(event) {
             result = operate(lastOperator, leftOperand, rightOperand);
             stackPush(operandStack, result);
         } while (!stackEmpty(operatorStack));
-        displayFloat(result);
+        display(result);
     }
     stackPush(operatorStack, currentOperator);
     operatorSelected = true;
