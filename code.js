@@ -122,6 +122,7 @@ function operatorClicked(event) {
             result = null;
         } else {
             stackPush(operandStack, parseFloat(operand));
+            disableBackspace();
             operand = '0';
         }
         decimalEntered = false;
@@ -150,6 +151,7 @@ function equalsClicked() {
     }
     if(!operatorSelected) {
         enableNumbers();
+        disableBackspace();
         stackPush(operandStack, parseFloat(operand));
         operand = '0';
         decimalEntered = false;
