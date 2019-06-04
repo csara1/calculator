@@ -21,7 +21,6 @@ div {
 
 .backspace {
     background-color: orange;
-    grid-column: 2 / 4;
 }
 
 .disabled {
@@ -31,10 +30,15 @@ div {
 #equals {
     background-color: blue;
     color: white;
-    grid-column: 3 / 5;
+    grid-column: 4 / 4;
+    grid-row: 4 / 6;
 }
 
 #clear {
     background-color: red;
     color: white;
+}
+
+#zero {
+    grid-column: 1 / 3;
 }

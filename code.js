@@ -45,21 +45,33 @@ function splitInThousands(integer) {
 }
 
 function display(number) {
-    const absValue = Math.abs(number);
-    if(absValue >= 1000 && absValue < 1e21) {
-        number = (number<0) ? '-'+splitInThousands(absValue)
-                            : splitInThousands(absValue);
+    const parts = number.split('.'),
+          intPart = parts[0].length > 0 ? Math.abs(parseInt(parts[0]))
+                                        : 0;
+          sign = number[0] == '-' ? '-'
+                                  : '';
+    let string = sign + (intPart >= 1000 && intPart < 1e21 ? splitInThousands(intPart)
+                                                           : intPart);
+    if(parts.length == 2 && parts[1].length > 0) {
+        string += '.' + parts[1];
     }
-    document.getElementById('display').value = number;
+    document.getElementById('display').value = string;
+    return string;
 }
 
 function digitClicked(event) {
     operatorSelected = false;
     result = null;
-    operand *= 10;
-    operand += parseInt(event.srcElement.innerText);
-    display(operand);
-    if(operand > 1e14) {
+    const element = event.srcElement;
+    if(element.id == 'dot') {
+        element.removeEventListener('click', digitClicked);
+        element.classList.add('disabled');
+        decimalEntered = true;
+        operand += '.';
+    } else {
+        operand += event.srcElement.innerText;
+    }
+    if(display(operand).length >= 17) {
         numberButtons.forEach(button => {
             button.removeEventListener('click', digitClicked);
             button.classList.add('disabled');
@@ -88,9 +100,10 @@ function operatorClicked(event) {
             stackPush(operandStack, result);
             result = null;
         } else {
-            stackPush(operandStack, operand);
-            operand = 0;
+            stackPush(operandStack, parseFloat(operand));
+            operand = '0';
         }
+        decimalEntered = false;
     } else {
         stackPop(operatorStack);
     }
@@ -104,7 +117,7 @@ function operatorClicked(event) {
             result = operate(lastOperator, leftOperand, rightOperand);
             stackPush(operandStack, result);
         } while (!stackEmpty(operatorStack));
-        display(result);
+        display(result + '');
     }
     stackPush(operatorStack, currentOperator);
     operatorSelected = true;
@@ -119,8 +132,9 @@ function equalsClicked() {
             button.addEventListener('click', digitClicked);
             button.classList.remove('disabled');
         });
-        stackPush(operandStack, operand);
-        operand = 0;
+        stackPush(operandStack, parseFloat(operand));
+        operand = '0';
+        decimalEntered = false;
     } else {
         stackPop(operatorStack);
     }
@@ -131,16 +145,17 @@ function equalsClicked() {
         stackPush(operandStack, operate(operator, leftOperand, rightOperand));
     }
     result = stackPop(operandStack);
-    display(result);
+    display(result + '');
 }
 
 function initialize() {
-    operand = 0;
+    decimalEntered = false;
+    operand = '0';
     operatorSelected = false;
     operandStack = stackCreate();
     operatorStack = stackCreate();
     result = null;
-    display(0);
+    display('0');
     numberButtons.forEach(button => {
         button.addEventListener('click', digitClicked);
         button.classList.remove('disabled');
@@ -169,7 +184,8 @@ function stackPop(stack) {
 
 const numberButtons = Array.from(document.getElementsByClassName('number')),
       operatorButtons = Array.from(document.getElementsByClassName('operator'));
-let operand,
+let decimalEntered,
+    operand,
     operatorSelected,
     operandStack,
     operatorStack,
