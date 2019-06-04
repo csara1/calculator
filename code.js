@@ -104,7 +104,7 @@ function disableBackspace() {
 }
 
 function precedence(operator) {
-    switch (operator) {
+    switch (operator.innerText) {
         case '+':
         case '-':
             return 0;
@@ -129,14 +129,14 @@ function operatorClicked(event) {
     } else {
         stackPop(operatorStack);
     }
-    let currentOperator = event.srcElement.innerText;
+    let currentOperator = event.srcElement;
     if(!stackEmpty(operatorStack) && precedence(currentOperator) <= precedence(stackTop(operatorStack))) {
         let result;
         do {
             let rightOperand = stackPop(operandStack),
                 lastOperator = stackPop(operatorStack),
                 leftOperand = stackPop(operandStack);
-            result = operate(lastOperator, leftOperand, rightOperand);
+            result = operate(lastOperator.innerText, leftOperand, rightOperand);
             stackPush(operandStack, result);
         } while (!stackEmpty(operatorStack));
         display(result + '');
@@ -162,7 +162,7 @@ function equalsClicked() {
         let rightOperand = stackPop(operandStack),
             operator = stackPop(operatorStack),
             leftOperand = stackPop(operandStack);
-        stackPush(operandStack, operate(operator, leftOperand, rightOperand));
+        stackPush(operandStack, operate(operator.innerText, leftOperand, rightOperand));
     }
     result = stackPop(operandStack);
     display(result + '');
