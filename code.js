@@ -77,11 +77,13 @@ function digitClicked(event) {
     operand += element.innerText;
     backspaceButton.addEventListener('click', backspaceClicked);
     backspaceButton.classList.remove('disabled');
+    backspaceEnabled = true;
     if(display(operand).length >= 17) {
         numberButtons.forEach(button => {
             button.removeEventListener('click', digitClicked);
             button.classList.add('disabled');
         });
+        numbersEnabled = false;
     }
 }
 
@@ -104,6 +106,7 @@ function backspaceClicked() {
 function disableBackspace() {
     backspaceButton.removeEventListener('click', backspaceClicked);
     backspaceButton.classList.add('disabled');
+    backspaceEnabled = false;
 }
 
 function precedence(operator) {
@@ -178,6 +181,7 @@ function enableNumbers() {
         button.addEventListener('click', digitClicked);
         button.classList.remove('disabled');
     });
+    numbersEnabled = true;
 }
 
 function initialize() {
@@ -226,7 +230,9 @@ function main() {
 
 const backspaceButton = Array.from(document.getElementsByClassName('backspace'))[0],
       numberButtons = Array.from(document.getElementsByClassName('number'));
-let decimalEntered,
+let backspaceEnabled,
+    decimalEntered,
+    numbersEnabled,
     operand,
     operatorSelected,
     operandStack,
