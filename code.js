@@ -219,6 +219,24 @@ function stackPop(stack) {
     return stack.pop();
 }
 
+function keyPressed(event) {
+    switch(event.key) {
+        case 'Escape':
+            initialize();
+            break;
+        case 'Backspace':
+            if(backspaceEnabled) {
+                backspaceClicked();
+            }
+            break;
+        case 'Enter':
+        case '=':
+            equalsClicked();
+            break;
+    }
+    event.preventDefault();
+}
+
 function main() {
     const operatorButtons = Array.from(document.getElementsByClassName('operator'));
 
@@ -226,6 +244,7 @@ function main() {
     operatorButtons.forEach(button => button.addEventListener('click', operatorClicked));
     document.getElementById('equals').addEventListener('click', equalsClicked);
     document.getElementById('clear').addEventListener('click', initialize);
+    document.addEventListener('keydown', keyPressed);
 }
 
 const backspaceButton = Array.from(document.getElementsByClassName('backspace'))[0],
