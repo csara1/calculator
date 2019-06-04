@@ -182,16 +182,20 @@ function stackPop(stack) {
     return stack.pop();
 }
 
-const numberButtons = Array.from(document.getElementsByClassName('number')),
-      operatorButtons = Array.from(document.getElementsByClassName('operator'));
+function main() {
+    const operatorButtons = Array.from(document.getElementsByClassName('operator'));
+
+    initialize();
+    operatorButtons.forEach(button => button.addEventListener('click', operatorClicked));
+    document.getElementById('equals').addEventListener('click', equalsClicked);
+    document.getElementById('clear').addEventListener('click', initialize);
+}
+
+const numberButtons = Array.from(document.getElementsByClassName('number'));
 let decimalEntered,
     operand,
     operatorSelected,
     operandStack,
     operatorStack,
     result;
-
-initialize();
-operatorButtons.forEach(button => button.addEventListener('click', operatorClicked));
-document.getElementById('equals').addEventListener('click', equalsClicked);
-document.getElementById('clear').addEventListener('click', initialize);
+main();
