@@ -60,7 +60,10 @@ function display(number) {
 }
 
 function digitClicked(event) {
-    operatorSelected = false;
+    if(operatorSelected) {
+        stackTop(operatorStack).classList.remove('pressed');
+        operatorSelected = false;
+    }
     result = null;
     const element = event.srcElement;
     if(operand == '0' && element.id == 'zero') {
@@ -115,7 +118,9 @@ function precedence(operator) {
 }
 
 function operatorClicked(event) {
-    if(!operatorSelected) {
+    if(operatorSelected) {
+        stackPop(operatorStack).classList.remove('pressed');
+    } else {
         enableNumbers();
         if(result != null) {
             stackPush(operandStack, result);
@@ -126,37 +131,37 @@ function operatorClicked(event) {
             operand = '0';
         }
         decimalEntered = false;
-    } else {
-        stackPop(operatorStack);
+        operatorSelected = true;
     }
-    let currentOperator = event.srcElement;
+    const currentOperator = event.srcElement;
     if(!stackEmpty(operatorStack) && precedence(currentOperator) <= precedence(stackTop(operatorStack))) {
-        let result;
+        let partialResult;
         do {
             let rightOperand = stackPop(operandStack),
                 lastOperator = stackPop(operatorStack),
                 leftOperand = stackPop(operandStack);
-            result = operate(lastOperator.innerText, leftOperand, rightOperand);
-            stackPush(operandStack, result);
-        } while (!stackEmpty(operatorStack));
-        display(result + '');
+            partialResult = operate(lastOperator.innerText, leftOperand, rightOperand);
+            stackPush(operandStack, partialResult);
+        } while (!stackEmpty(operatorStack) && precedence(currentOperator) <= precedence(stackTop(operatorStack)));
+        display(partialResult + '');
     }
     stackPush(operatorStack, currentOperator);
-    operatorSelected = true;
+    currentOperator.classList.add('pressed');
 }
 
 function equalsClicked() {
     if(result != null) {
         return;
     }
-    if(!operatorSelected) {
+    if(operatorSelected) {
+        stackPop(operatorStack).classList.remove('pressed');
+        operatorSelected = false;
+    } else {
         enableNumbers();
         disableBackspace();
         stackPush(operandStack, parseFloat(operand));
         operand = '0';
         decimalEntered = false;
-    } else {
-        stackPop(operatorStack);
     }
     while(!stackEmpty(operatorStack)) {
         let rightOperand = stackPop(operandStack),
@@ -178,7 +183,10 @@ function enableNumbers() {
 function initialize() {
     decimalEntered = false;
     operand = '0';
-    operatorSelected = false;
+    if(operatorSelected) {
+        stackPop(operatorStack).classList.remove('pressed');
+        operatorSelected = false;
+    }
     operandStack = stackCreate();
     operatorStack = stackCreate();
     result = null;

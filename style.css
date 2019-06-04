@@ -42,3 +42,8 @@ div {
 #zero {
     grid-column: 1 / 3;
 }
+
+.pressed {
+    background-color: green;
+    color: white;
+}
