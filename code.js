@@ -63,20 +63,47 @@ function digitClicked(event) {
     operatorSelected = false;
     result = null;
     const element = event.srcElement;
+    if(operand == '0' && element.id == 'zero') {
+        return;
+    }
     if(element.id == 'dot') {
         element.removeEventListener('click', digitClicked);
         element.classList.add('disabled');
         decimalEntered = true;
-        operand += '.';
-    } else {
-        operand += event.srcElement.innerText;
     }
+    operand += element.innerText;
+    backspaceButton.addEventListener('click', backspaceClicked);
+    backspaceButton.classList.remove('disabled');
     if(display(operand).length >= 17) {
         numberButtons.forEach(button => {
             button.removeEventListener('click', digitClicked);
             button.classList.add('disabled');
         });
     }
+}
+
+function backspaceClicked() {
+    if(display(operand).length >= 17) {
+        numberButtons.forEach(button => {
+            button.addEventListener('click', digitClicked);
+            button.classList.remove('disabled');
+        });
+    }
+    if(operand.slice(-1) == '.') {
+        const decimalButton = document.getElementById('dot');
+        decimalButton.addEventListener('click', digitClicked);
+        decimalButton.classList.remove('disabled');
+    }
+    operand = operand.slice(0, -1);
+    if(operand == '0') {
+        disableBackspace();
+    }
+    display(operand);
+}
+
+function disableBackspace() {
+    backspaceButton.removeEventListener('click', backspaceClicked);
+    backspaceButton.classList.add('disabled');
 }
 
 function precedence(operator) {
@@ -160,6 +187,7 @@ function initialize() {
         button.addEventListener('click', digitClicked);
         button.classList.remove('disabled');
     });
+    disableBackspace();
 }
 
 function stackCreate () {
@@ -191,7 +219,8 @@ function main() {
     document.getElementById('clear').addEventListener('click', initialize);
 }
 
-const numberButtons = Array.from(document.getElementsByClassName('number'));
+const backspaceButton = Array.from(document.getElementsByClassName('backspace'))[0],
+      numberButtons = Array.from(document.getElementsByClassName('number'));
 let decimalEntered,
     operand,
     operatorSelected,
