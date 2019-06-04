@@ -84,10 +84,7 @@ function digitClicked(event) {
 
 function backspaceClicked() {
     if(display(operand).length >= 17) {
-        numberButtons.forEach(button => {
-            button.addEventListener('click', digitClicked);
-            button.classList.remove('disabled');
-        });
+        enableNumbers();
     }
     if(operand.slice(-1) == '.') {
         const decimalButton = document.getElementById('dot');
@@ -119,10 +116,7 @@ function precedence(operator) {
 
 function operatorClicked(event) {
     if(!operatorSelected) {
-        numberButtons.forEach(button => {
-            button.addEventListener('click', digitClicked);
-            button.classList.remove('disabled');
-        });
+        enableNumbers();
         if(result != null) {
             stackPush(operandStack, result);
             result = null;
@@ -155,10 +149,7 @@ function equalsClicked() {
         return;
     }
     if(!operatorSelected) {
-        numberButtons.forEach(button => {
-            button.addEventListener('click', digitClicked);
-            button.classList.remove('disabled');
-        });
+        enableNumbers();
         stackPush(operandStack, parseFloat(operand));
         operand = '0';
         decimalEntered = false;
@@ -175,6 +166,13 @@ function equalsClicked() {
     display(result + '');
 }
 
+function enableNumbers() {
+    numberButtons.forEach(button => {
+        button.addEventListener('click', digitClicked);
+        button.classList.remove('disabled');
+    });
+}
+
 function initialize() {
     decimalEntered = false;
     operand = '0';
@@ -183,10 +181,7 @@ function initialize() {
     operatorStack = stackCreate();
     result = null;
     display('0');
-    numberButtons.forEach(button => {
-        button.addEventListener('click', digitClicked);
-        button.classList.remove('disabled');
-    });
+    enableNumbers();
     disableBackspace();
 }
 
