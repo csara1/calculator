@@ -1,29 +1,13 @@
-function add(a, b) {
-    return a+b;
-}
-
-function subtract(a, b) {
-    return a-b;
-}
-
-function multiply(a, b) {
-    return a*b;
-}
-
-function divide(a, b) {
-    return a/b;
-}
-
 function operate(operator, a, b) {
     switch(operator) {
         case '+':
-            return add(a, b);
+            return a+b;
         case '-':
-            return subtract(a, b);
+            return a-b;
         case '*':
-            return multiply(a, b);
+            return a*b;
         case '/':
-            return divide(a, b);
+            return a/b;
     }
 }
 
@@ -181,10 +165,6 @@ function handleOperator(currentOperator) {
     getButtonBySymbol(currentOperator).classList.add('pressed');
 }
 
-function operatorClicked(event) {
-    handleOperator(event.srcElement.innerText);
-}
-
 function equalsClicked() {
     if(result != null) {
         return;
@@ -232,7 +212,7 @@ function initialize() {
     disableBackspace();
 }
 
-function stackCreate () {
+function stackCreate() {
     return new Array(0);
 }
 
@@ -300,7 +280,7 @@ function main() {
     const operatorButtons = Array.from(document.getElementsByClassName('operator'));
 
     initialize();
-    operatorButtons.forEach(button => button.addEventListener('click', operatorClicked));
+    operatorButtons.forEach(button => button.addEventListener('click', event => handleOperator(event.srcElement.innerText)));
     document.getElementById('equals').addEventListener('click', equalsClicked);
     document.getElementById('clear').addEventListener('click', initialize);
     document.addEventListener('keydown', keyPressed);
