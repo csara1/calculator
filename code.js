@@ -61,7 +61,9 @@ function display(number) {
 
 function digitClicked(event) {
     if(operatorSelected) {
-        stackTop(operatorStack).classList.remove('pressed');
+        const lastOperator = stackTop(operatorStack),
+              lastButton = getButtonBySymbol(lastOperator);
+        lastButton.classList.remove('pressed');
         operatorSelected = false;
     }
     result = null;
@@ -110,7 +112,7 @@ function disableBackspace() {
 }
 
 function precedence(operator) {
-    switch (operator.innerText) {
+    switch (operator) {
         case '+':
         case '-':
             return 0;
@@ -120,9 +122,24 @@ function precedence(operator) {
     }
 }
 
+function getButtonBySymbol(symbol) {
+    switch(symbol) {
+        case '+':
+            return document.getElementById('add');
+        case '-':
+            return document.getElementById('sub');
+        case '*':
+            return document.getElementById('mul');
+        case '/':
+            return document.getElementById('div');
+    }
+}
+
 function operatorClicked(event) {
     if(operatorSelected) {
-        stackPop(operatorStack).classList.remove('pressed');
+        const lastOperator = stackPop(operatorStack),
+              lastButton = getButtonBySymbol(lastOperator);
+        lastButton.classList.remove('pressed');
     } else {
         enableNumbers();
         if(result != null) {
@@ -136,14 +153,14 @@ function operatorClicked(event) {
         decimalEntered = false;
         operatorSelected = true;
     }
-    const currentOperator = event.srcElement;
+    const currentOperator = event.srcElement.innerText;
     if(!stackEmpty(operatorStack) && precedence(currentOperator) <= precedence(stackTop(operatorStack))) {
         let partialResult;
         do {
             let rightOperand = stackPop(operandStack),
                 lastOperator = stackPop(operatorStack),
                 leftOperand = stackPop(operandStack);
-            partialResult = operate(lastOperator.innerText, leftOperand, rightOperand);
+            partialResult = operate(lastOperator, leftOperand, rightOperand);
             stackPush(operandStack, partialResult);
         } while (!stackEmpty(operatorStack) && precedence(currentOperator) <= precedence(stackTop(operatorStack)));
         display(partialResult + '');
@@ -157,7 +174,9 @@ function equalsClicked() {
         return;
     }
     if(operatorSelected) {
-        stackPop(operatorStack).classList.remove('pressed');
+        const lastOperator = stackPop(operatorStack),
+              lastButton = getButtonBySymbol(lastOperator);
+        lastButton.classList.remove('pressed');
         operatorSelected = false;
     } else {
         enableNumbers();
@@ -170,7 +189,7 @@ function equalsClicked() {
         let rightOperand = stackPop(operandStack),
             operator = stackPop(operatorStack),
             leftOperand = stackPop(operandStack);
-        stackPush(operandStack, operate(operator.innerText, leftOperand, rightOperand));
+        stackPush(operandStack, operate(operator, leftOperand, rightOperand));
     }
     result = stackPop(operandStack);
     display(result + '');
@@ -188,7 +207,9 @@ function initialize() {
     decimalEntered = false;
     operand = '0';
     if(operatorSelected) {
-        stackPop(operatorStack).classList.remove('pressed');
+        const lastOperator = stackPop(operatorStack),
+              lastButton = getButtonBySymbol(lastOperator);
+        lastButton.classList.remove('pressed');
         operatorSelected = false;
     }
     operandStack = stackCreate();
@@ -233,6 +254,8 @@ function keyPressed(event) {
         case '=':
             equalsClicked();
             break;
+        default:
+            return;
     }
     event.preventDefault();
 }
