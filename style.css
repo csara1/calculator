@@ -1,11 +1,14 @@
-body, div {
+body, div, input {
     margin-left: auto;
     margin-right: auto;
+    padding: 0;
     width: 180px;
 }
 
 input {
+    border-width: 2px;
     text-align: right;
+    width: 176px;
 }
 
 div {
