@@ -61,22 +61,21 @@ function display(number) {
 
 function digitClicked(event) {
     if(operatorSelected) {
-        const lastOperator = stackTop(operatorStack),
-              lastButton = getButtonBySymbol(lastOperator);
-        lastButton.classList.remove('pressed');
+        deselectOperator(stackTop(operatorStack));
         operatorSelected = false;
     }
     result = null;
-    const element = event.srcElement;
-    if(operand == '0' && element.id == 'zero') {
+    const digit = event.srcElement.innerText;
+    if(operand == '0' && digit == '0') {
         return;
     }
-    if(element.id == 'dot') {
-        element.removeEventListener('click', digitClicked);
-        element.classList.add('disabled');
+    if(digit == '.') {
+        const button = getButtonBySymbol('.');
+        button.removeEventListener('click', digitClicked);
+        button.classList.add('disabled');
         decimalEntered = true;
     }
-    operand += element.innerText;
+    operand += digit;
     backspaceButton.addEventListener('click', backspaceClicked);
     backspaceButton.classList.remove('disabled');
     backspaceEnabled = true;
@@ -132,6 +131,8 @@ function getButtonBySymbol(symbol) {
             return document.getElementById('mul');
         case '/':
             return document.getElementById('div');
+        case '.':
+            return document.getElementById('dot');
     }
 }
 
