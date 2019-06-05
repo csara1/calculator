@@ -139,7 +139,7 @@ function deselectOperator(operator) {
     getButtonBySymbol(operator).classList.remove('pressed');
 }
 
-function operatorClicked(event) {
+function handleOperator(currentOperator) {
     if(operatorSelected) {
         deselectOperator(stackPop(operatorStack));
     } else {
@@ -155,7 +155,6 @@ function operatorClicked(event) {
         decimalEntered = false;
         operatorSelected = true;
     }
-    const currentOperator = event.srcElement.innerText;
     if(!stackEmpty(operatorStack) && precedence(currentOperator) <= precedence(stackTop(operatorStack))) {
         let partialResult;
         do {
@@ -169,6 +168,10 @@ function operatorClicked(event) {
     }
     stackPush(operatorStack, currentOperator);
     getButtonBySymbol(currentOperator).classList.add('pressed');
+}
+
+function operatorClicked(event) {
+    handleOperator(event.srcElement.innerText);
 }
 
 function equalsClicked() {
@@ -251,6 +254,12 @@ function keyPressed(event) {
         case 'Enter':
         case '=':
             equalsClicked();
+            break;
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+            handleOperator(event.key);
             break;
         default:
             return;
