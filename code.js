@@ -135,11 +135,13 @@ function getButtonBySymbol(symbol) {
     }
 }
 
+function deselectOperator(operator) {
+    getButtonBySymbol(operator).classList.remove('pressed');
+}
+
 function operatorClicked(event) {
     if(operatorSelected) {
-        const lastOperator = stackPop(operatorStack),
-              lastButton = getButtonBySymbol(lastOperator);
-        lastButton.classList.remove('pressed');
+        deselectOperator(stackPop(operatorStack));
     } else {
         enableNumbers();
         if(result != null) {
@@ -166,7 +168,7 @@ function operatorClicked(event) {
         display(partialResult + '');
     }
     stackPush(operatorStack, currentOperator);
-    currentOperator.classList.add('pressed');
+    getButtonBySymbol(currentOperator).classList.add('pressed');
 }
 
 function equalsClicked() {
@@ -174,9 +176,7 @@ function equalsClicked() {
         return;
     }
     if(operatorSelected) {
-        const lastOperator = stackPop(operatorStack),
-              lastButton = getButtonBySymbol(lastOperator);
-        lastButton.classList.remove('pressed');
+        deselectOperator(stackPop(operatorStack));
         operatorSelected = false;
     } else {
         enableNumbers();
@@ -207,9 +207,7 @@ function initialize() {
     decimalEntered = false;
     operand = '0';
     if(operatorSelected) {
-        const lastOperator = stackPop(operatorStack),
-              lastButton = getButtonBySymbol(lastOperator);
-        lastButton.classList.remove('pressed');
+        deselectOperator(stackPop(operatorStack));
         operatorSelected = false;
     }
     operandStack = stackCreate();
