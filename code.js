@@ -59,13 +59,12 @@ function display(number) {
     return string;
 }
 
-function digitClicked(event) {
+function handleDigit(digit) {
     if(operatorSelected) {
         deselectOperator(stackTop(operatorStack));
         operatorSelected = false;
     }
     result = null;
-    const digit = event.srcElement.innerText;
     if(operand == '0' && digit == '0') {
         return;
     }
@@ -88,14 +87,22 @@ function digitClicked(event) {
     }
 }
 
+function digitClicked(event) {
+    handleDigit(event.srcElement.innerText);
+}
+
 function backspaceClicked() {
-    if(display(operand).length >= 17) {
+    if(!numbersEnabled) {
         enableNumbers();
     }
+    const button = getButtonBySymbol('.');
     if(operand.slice(-1) == '.') {
-        const decimalButton = document.getElementById('dot');
-        decimalButton.addEventListener('click', digitClicked);
-        decimalButton.classList.remove('disabled');
+        button.addEventListener('click', digitClicked);
+        button.classList.remove('disabled');
+        decimalEntered = false;
+    } else if(decimalEntered) {
+        button.removeEventListener('click', digitClicked);
+        button.classList.add('disabled');
     }
     operand = operand.slice(0, -1);
     if(operand == '0') {
@@ -261,6 +268,24 @@ function keyPressed(event) {
         case '*':
         case '/':
             handleOperator(event.key);
+            break;
+        case '.':
+            if(decimalEntered) {
+                break;
+            }
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            if(numbersEnabled) {
+                handleDigit(event.key);
+            }
             break;
         default:
             return;
