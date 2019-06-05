@@ -59,6 +59,13 @@ function display(number) {
     return string;
 }
 
+function disableDecimal() {
+    const button = getButtonBySymbol('.');
+    button.removeEventListener('click', digitClicked);
+    button.classList.add('disabled');
+    decimalEntered = true;
+}
+
 function handleDigit(digit) {
     if(operatorSelected) {
         deselectOperator(stackTop(operatorStack));
@@ -69,10 +76,7 @@ function handleDigit(digit) {
         return;
     }
     if(digit == '.') {
-        const button = getButtonBySymbol('.');
-        button.removeEventListener('click', digitClicked);
-        button.classList.add('disabled');
-        decimalEntered = true;
+        disableDecimal();
     }
     operand += digit;
     backspaceButton.addEventListener('click', backspaceClicked);
@@ -95,14 +99,13 @@ function backspaceClicked() {
     if(!numbersEnabled) {
         enableNumbers();
     }
-    const button = getButtonBySymbol('.');
     if(operand.slice(-1) == '.') {
+        const button = getButtonBySymbol('.');
         button.addEventListener('click', digitClicked);
         button.classList.remove('disabled');
         decimalEntered = false;
     } else if(decimalEntered) {
-        button.removeEventListener('click', digitClicked);
-        button.classList.add('disabled');
+        disableDecimal();
     }
     operand = operand.slice(0, -1);
     if(operand == '0') {
